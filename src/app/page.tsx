@@ -1,66 +1,118 @@
+"use client"
+const a = "@/Assets/cross.png" 
+import img from "@/Assets/cross.png"
 import Image from "next/image";
+import RangeDado from "@/Components/RangeDado";
 import styles from "./page.module.css";
-
+import { useState } from "react";
 export default function Home() {
+
+  const sucessText = {player_01:"PLAYER 2 GANHOU", player_02:"PLAYER 1 GANHOU"}
+  const [isRound, setIsRound]= useState<{player_01:boolean, player_02:boolean}>({player_01: false, player_02: false})
+  const [valueRound, setValueRound] = useState<{player_01:number, player_02:number}>({player_01: 1, player_02:1});
+  const [pointRound, setPointRound] = useState<{player_01:number, player_02:number}>({player_01: 0, player_02:0});
+  function LançarDado(i:number){
+    const number = Math.floor(Math.random()*6+1)
+    if (i == 0) {
+      setValueRound({player_01: number, player_02: Number(valueRound?.player_02)})
+      setIsRound({player_01: true, player_02: isRound.player_01})
+      if( isRound.player_01 && isRound.player_01){
+        if (valueRound.player_01 > valueRound.player_02) {
+          setIsRound({player_01: false, player_02: false})
+          setPointRound({player_01: pointRound.player_01+1, player_02: pointRound.player_02})
+          return number 
+          // sucessText.player_01
+        }
+        else if (valueRound.player_01 == valueRound.player_02) {
+          return "EMPATE!!"
+        } 
+        else{
+          setIsRound({player_01: false, player_02: false})  
+          setPointRound({player_01: pointRound.player_01, player_02: pointRound.player_02+1})
+          
+          return sucessText.player_02
+
+        }
+      }
+      else {
+        return null 
+      }
+    }
+    else{
+      setValueRound({player_01: Number(valueRound?.player_01), player_02:number})
+       setIsRound({player_01: true, player_02: isRound.player_01})
+      if( isRound.player_01 && isRound.player_01){
+        if (valueRound.player_01 < valueRound.player_02) {
+          setIsRound({player_01: false, player_02: false})
+          setPointRound({player_01: pointRound.player_01, player_02: pointRound.player_02+1})
+
+          return sucessText.player_02
+
+        }
+        else{
+          setIsRound({player_01: false, player_02: false})  
+          setPointRound({player_01: pointRound.player_01+1, player_02: pointRound.player_02})
+            
+          return sucessText.player_01
+
+        }
+      }else{
+        return null 
+      }
+    }
+  }
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+    <div className="__contender">
+      <div className="count">
+        <h2>{pointRound.player_01} x {pointRound.player_02}</h2>
+      </div>
+    <main className="contender">
+      <div className="ContenderPlayerOne">
+      <h1 className="textDado">
+        Jogador 1:
+      </h1>
+      <div className="imgContender">
+      <RangeDado range={valueRound.player_01.toString()}></RangeDado>
+      </div>
+      <button id="ButtonPlayer"type="button"
+      onClick={
+        ()=>{
+          let Response= LançarDado(0)
+          setTimeout(()=>{
+            if ( Response != null) alert(Response)
+              
+          },2000)
+          
+        }
+      }
+      >Lançar dado</button>
+
+      </div>
+
+      <div className="ContenderPlayerOne">
+
+      <h1 className="textDado">
+        Jogador 2:
+      </h1>
+      <div className="imgContender">
+      <RangeDado range={valueRound.player_02.toString()}></RangeDado>
+      </div>
+      <button id="ButtonPlayer"type="button"
+      onClick={
+    
+          ()=>{
+          let Response= LançarDado(1)
+          setTimeout(()=>{
+            if ( Response != null) alert(Response)
+          },3000)
+          
+        }
+        
+      }
+      >Lançar dado</button>
+      </div>
+    </main>
     </div>
   );
 }
