@@ -11,55 +11,36 @@ export default function Home() {
   const [isRound, setIsRound]= useState<{player_01:boolean, player_02:boolean}>({player_01: false, player_02: false})
   const [valueRound, setValueRound] = useState<{player_01:number, player_02:number}>({player_01: 1, player_02:1});
   const [pointRound, setPointRound] = useState<{player_01:number, player_02:number}>({player_01: 0, player_02:0});
-  function LançarDado(i:number){
-    const number = Math.floor(Math.random()*6+1)
-    if (i == 0) {
-      setValueRound({player_01: number, player_02: Number(valueRound?.player_02)})
-      setIsRound({player_01: true, player_02: isRound.player_01})
-      if( isRound.player_01 && isRound.player_01){
-        if (valueRound.player_01 > valueRound.player_02) {
-          setIsRound({player_01: false, player_02: false})
-          setPointRound({player_01: pointRound.player_01+1, player_02: pointRound.player_02})
-          return number 
-          // sucessText.player_01
+  function LancarDado(){
+    if(isRound.player_01 && isRound.player_02){
+      if (valueRound.player_01 > valueRound.player_02){
+         setPointRound({player_01: pointRound.player_01+1, player_02: pointRound.player_02})
+        setIsRound({player_01: false, player_02: false})
+         if (pointRound.player_01 == 4) {
+          alert("FIM DE JOGO O PLAYER 1 VENCEU")
+          const confim = confirm("Recomeçar o jogo?")
+          if (confim) {
+            location.reload()
+          }
         }
-        else if (valueRound.player_01 == valueRound.player_02) {
-          return "EMPATE!!"
-        } 
-        else{
-          setIsRound({player_01: false, player_02: false})  
-          setPointRound({player_01: pointRound.player_01, player_02: pointRound.player_02+1})
-          
-          return sucessText.player_02
 
+        }else if(valueRound.player_01 < valueRound.player_02){
+         setPointRound({player_01: pointRound.player_01, player_02: pointRound.player_02+1})
+        setIsRound({player_01: false, player_02: false})
+         if (pointRound.player_02 == 4) {
+          alert("FIM DE JOGO O PLAYER 2 VENCEU")
+          const confim = confirm("Recomeçar o jogo?")
+          if (confim) {
+            location.reload()
+          }
         }
-      }
-      else {
-        return null 
-      }
-    }
-    else{
-      setValueRound({player_01: Number(valueRound?.player_01), player_02:number})
-       setIsRound({player_01: true, player_02: isRound.player_01})
-      if( isRound.player_01 && isRound.player_01){
-        if (valueRound.player_01 < valueRound.player_02) {
-          setIsRound({player_01: false, player_02: false})
-          setPointRound({player_01: pointRound.player_01, player_02: pointRound.player_02+1})
-
-          return sucessText.player_02
-
-        }
-        else{
-          setIsRound({player_01: false, player_02: false})  
-          setPointRound({player_01: pointRound.player_01+1, player_02: pointRound.player_02})
-            
-          return sucessText.player_01
-
-        }
+    
       }else{
-        return null 
+        setIsRound({player_01: false, player_02: false})
+      
       }
     }
+
   }
 
   return (
@@ -77,12 +58,10 @@ export default function Home() {
       </div>
       <button id="ButtonPlayer"type="button"
       onClick={
-        ()=>{
-          let Response= LançarDado(0)
-          setTimeout(()=>{
-            if ( Response != null) alert(Response)
-              
-          },2000)
+        async ()=>{
+          await setValueRound({player_01: Math.floor(Math.random()*6+1), player_02: valueRound.player_02})
+          await setIsRound({player_01: true, player_02: isRound.player_02})
+          LancarDado()
           
         }
       }
@@ -101,13 +80,13 @@ export default function Home() {
       <button id="ButtonPlayer"type="button"
       onClick={
     
-          ()=>{
-          let Response= LançarDado(1)
-          setTimeout(()=>{
-            if ( Response != null) alert(Response)
-          },3000)
-          
+          async ()=>{
+          setIsRound({player_02: true, player_01: isRound.player_01})
+          await setValueRound({player_01: valueRound.player_01, player_02: Math.floor(Math.random()*6+1)})
+          LancarDado()
+
         }
+
         
       }
       >Lançar dado</button>
